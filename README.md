@@ -1,5 +1,6 @@
 # react-native-jianshuDemo 仿制简书APP
 该版本只支持IOS，做了一些基本的功能，未来会持续更新
+![image](https://github.com/angel8731/react-native-jianshuDemo/blob/master/%E7%AE%80%E4%B9%A6app.gif)
 
 ##步骤
 第一步：npm install
