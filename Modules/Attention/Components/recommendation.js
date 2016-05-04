@@ -18,7 +18,7 @@ import React,{
     } from 'react-native';
 
 import Swiper from 'react-native-swiper';
-import hotDetail from './hotDetail.js';
+import Detail from './Detail.js';
 //加载多种li样式
 import Li from './lis.js';
 
@@ -56,9 +56,7 @@ var Hot = React.createClass({
             .then((response) => response.json())
             .then(
             (responseData) => {
-                console.log(responseData);
                 if(responseData.status == 1) {
-                    console.log(this.state.dataSource);
                     if(this.state.dataSource == null) {
                         var tmp = {
                             lists:[responseData.data.lists.lists],
@@ -170,10 +168,10 @@ var Hot = React.createClass({
     _pressRow : function(rowData,sectionID,rowID){
         this.props.nav.push({
             barTintColor : '#000',
-            title: "详情页",
-            component : hotDetail,
+            title: rowData.resource.title,
+            component : Detail,
             backButtonTitle: '返回',
-            rightButtonTitle: 'Cancel',
+            rightButtonTitle: '更多',
             navigationBarHidden : false,
             onRightButtonPress: () => this.props.nav.pop(),
             passProps : {data : rowData}
