@@ -10,101 +10,162 @@ import React,{
     ListView,
     TouchableHighlight,
     Image,
-    Dimensions
+    Dimensions,
+    Platform,
+    AsyncStorage,
+    ActivityIndicatorIOS, //转圈加载
+    RefreshControl
     } from 'react-native';
 
 import Swiper from 'react-native-swiper';
 import hotDetail from './hotDetail.js';
+//加载多种li样式
+import Li from './lis.js';
+
+var PRE_LIST_URL = "http://m.yergoo.com/api/news/app/lists/";
+var LISTS_KEY = "toutiao-kailuo99-";
 
 var base64Icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABLCAQAAACSR7JhAAADtUlEQVR4Ac3YA2Bj6QLH0XPT1Fzbtm29tW3btm3bfLZtv7e2ObZnms7d8Uw098tuetPzrxv8wiISrtVudrG2JXQZ4VOv+qUfmqCGGl1mqLhoA52oZlb0mrjsnhKpgeUNEs91Z0pd1kvihA3ULGVHiQO2narKSHKkEMulm9VgUyE60s1aWoMQUbpZOWE+kaqs4eLEjdIlZTcFZB0ndc1+lhB1lZrIuk5P2aib1NBpZaL+JaOGIt0ls47SKzLC7CqrlGF6RZ09HGoNy1lYl2aRSWL5GuzqWU1KafRdoRp0iOQEiDzgZPnG6DbldcomadViflnl/cL93tOoVbsOLVM2jylvdWjXolWX1hmfZbGR/wjypDjFLSZIRov09BgYmtUqPQPlQrPapecLgTIy0jMgPKtTeob2zWtrGH3xvjUkPCtNg/tm1rjwrMa+mdUkPd3hWbH0jArPGiU9ufCsNNWFZ40wpwn+62/66R2RUtoso1OB34tnLOcy7YB1fUdc9e0q3yru8PGM773vXsuZ5YIZX+5xmHwHGVvlrGPN6ZSiP1smOsMMde40wKv2VmwPPVXNut4sVpUreZiLBHi0qln/VQeI/LTMYXpsJtFiclUN+5HVZazim+Ky+7sAvxWnvjXrJFneVtLWLyPJu9K3cXLWeOlbMTlrIelbMDlrLenrjEQOtIF+fuI9xRp9ZBFp6+b6WT8RrxEpdK64BuvHgDk+vUy+b5hYk6zfyfs051gRoNO1usU12WWRWL73/MMEy9pMi9qIrR4ZpV16Rrvduxazmy1FSvuFXRkqTnE7m2kdb5U8xGjLw/spRr1uTov4uOgQE+0N/DvFrG/Jt7i/FzwxbA9kDanhf2w+t4V97G8lrT7wc08aA2QNUkuTfW/KimT01wdlfK4yEw030VfT0RtZbzjeMprNq8m8tnSTASrTLti64oBNdpmMQm0eEwvfPwRbUBywG5TzjPCsdwk3IeAXjQblLCoXnDVeoAz6SfJNk5TTzytCNZk/POtTSV40NwOFWzw86wNJRpubpXsn60NJFlHeqlYRbslqZm2jnEZ3qcSKgm0kTli3zZVS7y/iivZTweYXJ26Y+RTbV1zh3hYkgyFGSTKPfRVbRqWWVReaxYeSLarYv1Qqsmh1s95S7G+eEWK0f3jYKTbV6bOwepjfhtafsvUsqrQvrGC8YhmnO9cSCk3yuY984F1vesdHYhWJ5FvASlacshUsajFt2mUM9pqzvKGcyNJW0arTKN1GGGzQlH0tXwLDgQTurS8eIQAAAABJRU5ErkJggg==';
+
+var ds = new ListView.DataSource({
+    rowHasChanged: (r1, r2) => r1 != r2,
+    sectionHeaderHasChanged : (s1, s2) => s1 !== s2
+});
+
 var Hot = React.createClass({
     getInitialState : function(){
-        console.log(this.props);
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 != r2
-        });
         return {
-            ds : [
-                {AwayTeam: "TeamA", HomeTeam: "TeamB", Selection: "AwayTeam"},
-                {AwayTeam: "TeamC", HomeTeam: "TeamD", Selection: "HomeTeam"},
-                {AwayTeam: "TeamC", HomeTeam: "TeamD", Selection: "HomeTeam"},
-                {AwayTeam: "TeamC", HomeTeam: "TeamD", Selection: "HomeTeam"},
-                {AwayTeam: "TeamC", HomeTeam: "TeamD", Selection: "HomeTeam"},
-                {AwayTeam: "TeamC", HomeTeam: "TeamD", Selection: "HomeTeam"},
-                {AwayTeam: "TeamC", HomeTeam: "TeamD", Selection: "HomeTeam"}
-            ],
-            dataSource: ds
+            dataSource: null
         }
     },
     onEndReached : function(){
 
     },
+    getData : async function(pos, count) {
+        this.state.dataSource = null
+        if(!this.state.dataSource) {
+            var begin_id = 0;
+        } else {
+            var begin_id = this.state.dataSource.max;
+        }
+        if(!count) {
+            count = 6;
+        }
+        var url = PRE_LIST_URL + this.props.tabLabel + '/'+count+'?beginid=' + begin_id;
+        fetch(url)
+            .then((response) => response.json())
+            .then(
+            (responseData) => {
+                console.log(responseData);
+                if(responseData.status == 1) {
+                    console.log(this.state.dataSource);
+                    if(this.state.dataSource == null) {
+                        var tmp = {
+                            lists:[responseData.data.lists.lists],
+                            max: responseData.data.lists.max
+                        };
+
+                    } else {
+                        var tmp = this.state.dataSource;
+                        if(pos == 'top') {
+                            tmp.lists.unshift(responseData.data.lists.lists);
+                        } else {
+                            tmp.lists.push(responseData.data.lists.lists);
+                        }
+                        tmp.max = responseData.data.lists.max;
+
+                    }
+                    this.setState({
+                        dataSource: tmp,
+                        loaded: true
+                    });
+
+                    AsyncStorage.setItem(LISTS_KEY + this.props.tabLabel, JSON.stringify(tmp)).done();
+                } else {
+                    // Alert.alert('暂无最新，请稍等片刻！');
+                }
+            }
+        )
+            .done();
+    },
+    _loadinitData : async function(){
+        await this.getData('init',30);
+    },
+    renderFooter : function() {
+        if(Platform.OS === 'ios') {
+            return (
+                <View style={{height:60,flex : 1,alignItems:'center',justifyContent:'center'}}>
+                    <ActivityIndicatorIOS color = {'#d43d3d'} />
+                </View>
+            );
+        } else {
+            return (
+                <View style={{height:40,alignItems:'center',justifyContent:'center'}}>
+                    <ProgressBar color = {'#d47b83'} styleAttr="Small" />
+                </View>
+            );
+        }
+    },
     render : function(){
         var height = Dimensions.get('window').height;
-        return (
-            <View style={{height : height-80}}>
-                <Swiper style={styles.wrapper} showsButtons={false} height={140}>
-                    <View style={styles.slide1}>
-                        <Text style={styles.text}>Hello Swiper</Text>
+        if(!this.state.loaded) {
+            if(Platform.OS === 'ios') {
+                return (
+                    <View style={{flex:1}}>
+                        <View style={{flex:1, alignItems:'center',justifyContent:'center'}}>
+                            <ActivityIndicatorIOS color = {'#d43d3d'} />
+                        </View>
                     </View>
-                    <View style={styles.slide2}>
-                        <Text style={styles.text}>Beautiful</Text>
+                );
+            } else {
+                return (
+                    <View style={{flex:1}}>
+                        <View style={{flex:1, alignItems:'center',justifyContent:'center'}}>
+                            <ProgressBar color = {'#d47b83'} />
+                        </View>
                     </View>
-                    <View style={styles.slide3}>
-                        <Text style={styles.text}>And simple</Text>
-                    </View>
-                </Swiper>
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow}
-                    onEndReached={this.onEndReached}
-                    style={{backgroundColor : '#FFF'}}
-                />
-            </View>
-        );
+                );
+            }
+        }else{
+            return (
+                <View style={{height : height-80}}>
+                    <ListView
+                        initialListSize={20}
+                        dataSource={ds.cloneWithRowsAndSections(this.state.dataSource.lists)}
+                        renderRow={this.renderRow}  //渲染每一条数据
+                        onEndReached={this.onEndReached}
+                        style={{backgroundColor : '#FFF'}}
+                        renderFooter={this.renderFooter}
+                        minPulldownDistance={30}   // 最新下拉长度
+                    />
+                </View>
+            );
+        }
     },
+    /*
+    * <Swiper style={styles.wrapper} showsButtons={false} height={140}>
+     <View style={styles.slide1}>
+     <Text style={styles.text}>Hello Swiper</Text>
+     </View>
+     <View style={styles.slide2}>
+     <Text style={styles.text}>Beautiful</Text>
+     </View>
+     <View style={styles.slide3}>
+     <Text style={styles.text}>And simple</Text>
+     </View>
+     </Swiper>
+    * */
     componentDidMount(){
-        this.setState({
-            dataSource:this.state.dataSource.cloneWithRows(this.state.ds)
-        })
-
+        if(!this.state.dataSource){
+            this._loadinitData();
+        }
     },
     renderRow : function(rowData: string, sectionID: number, rowID: number){
         return (
-            <TouchableHighlight underlayColor = '#D9D9D9' onPress={() => this._pressRow(rowData,sectionID,rowID)}>
-                <View style={styles.row}>
-                    <View style={styles.panelLeft}>
-                        <View style={styles.author}>
-                            <Image
-                                source={{uri: base64Icon, scale: 3}}
-                                style={styles.avast} />
-                            <Text style={styles.name}>超人先生</Text>
-                            <Text style={styles.time}>2分钟以前</Text>
-                        </View>
-                        <View style={styles.title}>
-                            <Text style={{fontSize : 16}}>暗恋，那么美（二）</Text>
-                        </View>
-                        <View style={styles.others}>
-                            <View style={styles.tag}>
-                                <Text style={styles.tagTxt}>投资理财</Text>
-                            </View>
-                            <Text style={styles.otherTxt}>阅读 7432</Text>
-                            <Text style={styles.dot}>·</Text>
-                            <Text style={styles.otherTxt}>评论 7432</Text>
-                            <Text style={styles.dot}>·</Text>
-                            <Text style={styles.otherTxt}>喜欢 7432</Text>
-
-                        </View>
-                    </View>
-                    <View style={styles.panelRight}>
-                        <Image
-                            source={{uri : 'https://img3.doubanio.com/img/celebrity/medium/17525.jpg'}}
-                            style={styles.base} />
-                    </View>
-                </View>
+            <TouchableHighlight underlayColor={'#D9D9D9'} onPress={() => this._pressRow(rowData,sectionID,rowID)}>
+                <Li data={rowData.resource} />
             </TouchableHighlight>
         );
-
     },
     _pressRow : function(rowData,sectionID,rowID){
         this.props.nav.push({
@@ -115,7 +176,7 @@ var Hot = React.createClass({
             rightButtonTitle: 'Cancel',
             navigationBarHidden : false,
             onRightButtonPress: () => this.props.nav.pop(),
-            passProps : {id : rowID}
+            passProps : {data : rowData}
         })
     }
 });

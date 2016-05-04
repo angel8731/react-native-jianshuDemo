@@ -12,11 +12,12 @@ import React, {
 import Dimensions from 'Dimensions';
 
 
-export default class Li extends React.Component{
-    constructor(props) {
-        super(props);
-    }
-    render() {
+var Li = React.createClass({
+    setNativeProps : function(nativeProps) {
+        console.log(nativeProps);
+        //this._root.setNativeProps(nativeProps);
+    },
+    render : function() {
         if(this.props.data.images.length >=3) {
             return this.li3(this.props.data);
         } else if (this.props.data.images.length >=1) {
@@ -24,18 +25,16 @@ export default class Li extends React.Component{
         } else {
             return this.li0(this.props.data);
         }
-    }
-
-    li0(data) {
+    },
+    li0 : function(data) {
         return (
             <View style={styles.list}>
                 <Text style={styles.listTitle}>{data.title}</Text>
                 <Text style={styles.listMute}>{data.source_public_time}    {data.source}</Text>
             </View>
         );
-    }
-
-    li1(data) {
+    },
+    li1 : function(data) {
         return (
             <View style={styles.list}>
                 <View style={{flexDirection: 'row'}}>
@@ -47,9 +46,8 @@ export default class Li extends React.Component{
                 </View>
             </View>
         );
-    }
-
-    li3(data) {
+    },
+    li3 : function(data) {
         return (
             <View style={styles.list}>
                 <Text style={styles.listTitle}>{data.title}</Text>
@@ -62,7 +60,7 @@ export default class Li extends React.Component{
             </View>
         );
     }
-};
+});
 
 var styles = StyleSheet.create({
 
@@ -97,3 +95,5 @@ var styles = StyleSheet.create({
   }
 
 });
+
+module.exports = Li;

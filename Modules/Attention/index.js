@@ -15,59 +15,30 @@ import ScrollableTabView, { DefaultTabBar, ScrollableTabBar, } from 'react-nativ
 import FacebookTabBar from './Components/FackbookTabBar.js';
 
 import AttentionNavbar from './Components/navbar.js';
-import ClassificationHeader from './Components/classificationHeader.js';
-import Hot from './Components/hot.js';
+import Header from './Components/classificationHeader.js';
+import Hot from './Components/recommendation.js';
+var arrs = [1,2,3]
 var AttentionPage = React.createClass({
     getInitialState : function(){
         console.log(this.props);
         return {}
     },
     render : function(){
-
+        var headerTab = Header.headerData,
+            scrollList = [];
+        headerTab.map((tab,idx) => {
+            var tmp = <ScrollView key={tab.key} tabLabel={tab.key} ref={tab.key}>
+                         <Hot tabLabel={tab.key} title={tab.title} ref={tab.key} nav={this.props.navigator}/>
+                      </ScrollView>
+            scrollList.push(tmp);
+        });
         return(
             <View style={styles.container}>
                 <View style={styles.navbar}>
                     <ScrollableTabView initialPage={0} locked={true} renderTabBar={() => <AttentionNavbar />}>
                         <View tabLabel="文章" style={[styles.classificationHeader,{flex : 1}]} ref='article'>
-                            <ScrollableTabView  initialPage={0} renderTabBar={() => <ClassificationHeader />}>
-                                <ScrollView tabLabel="hot" ref="hot">
-                                    <Hot tabLabel="hot" ref="hot" nav={this.props.navigator}/>
-                                </ScrollView>
-                                <ScrollView tabLabel="person-stalker" ref="new">
-                                    <View style={styles.card}>
-                                        <Text>Friends</Text>
-                                    </View>
-                                </ScrollView>
-                                <ScrollView tabLabel="ios-chatboxes" style={styles.tabView}>
-                                    <View style={styles.card}>
-                                        <Text>Messenger</Text>
-                                    </View>
-                                </ScrollView>
-                                <ScrollView tabLabel="ios-world" style={styles.tabView}>
-                                    <View style={styles.card}>
-                                        <Text>Notifications</Text>
-                                    </View>
-                                </ScrollView>
-                                <ScrollView tabLabel="navicon-round" style={styles.tabView}>
-                                    <View style={styles.card}>
-                                        <Text>Other nav</Text>
-                                    </View>
-                                </ScrollView>
-                                <ScrollView tabLabel="navicon-round" style={styles.tabView}>
-                                    <View style={styles.card}>
-                                        <Text>Other nav</Text>
-                                    </View>
-                                </ScrollView>
-                                <ScrollView tabLabel="navicon-round" style={styles.tabView}>
-                                    <View style={styles.card}>
-                                        <Text>Other nav</Text>
-                                    </View>
-                                </ScrollView>
-                                <ScrollView tabLabel="navicon-round" style={styles.tabView}>
-                                    <View style={styles.card}>
-                                        <Text>Other nav</Text>
-                                    </View>
-                                </ScrollView>
+                            <ScrollableTabView  initialPage={0} renderTabBar={() => <Header.ClassificationHeader />}>
+                            {scrollList}
                             </ScrollableTabView>
                         </View>
                         <View tabLabel="专题" style={{flex : 1}}>

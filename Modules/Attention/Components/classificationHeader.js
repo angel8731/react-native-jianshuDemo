@@ -12,55 +12,55 @@ import React,{
     } from 'react-native';
 var headerData = [
     {
-        key : 'hot',
-        title : '热门',
+        key : 'index',
+        title : '推荐',
         icon : '',
         href : ''
     },
     {
-        key : 'new',
-        title : '新上榜',
+        key : 'news',
+        title : '热点新闻',
         icon : '',
         href : ''
     },
     {
-        key : 'daily',
-        title : '日报',
+        key : 'joke',
+        title : '搞笑',
         icon : '',
         href : ''
     },
     {
-        key : 'sevenHot',
-        title : '七日热门',
+        key : 'video',
+        title : '视频',
         icon : '',
         href : ''
     },
     {
-        key : 'thirtyHot',
-        title : '三十日热门',
+        key : 'entertainment',
+        title : '娱乐',
         icon : '',
         href : ''
     },
     {
-        key : 'city',
-        title : '市集',
+        key : 'fashion',
+        title : '时尚',
         icon : '',
         href : ''
     },
     {
-        key : 'activity',
-        title : '有奖活动',
+        key : 'tech',
+        title : '科技',
         icon : '',
         href : ''
     },
     {
-        key : 'publish',
-        title : '简书出版',
+        key : 'sports',
+        title : '体育',
         icon : '',
         href : ''
     }
 ]
-var classificationHeader = React.createClass({
+var ClassificationHeader = React.createClass({
     getInitialState : function(){
         return {
             hotKey : 'hot'
@@ -110,5 +110,7 @@ const styles = StyleSheet.create({
     }
 });
 
-
-module.exports = classificationHeader;
+module.exports = {
+    ClassificationHeader : ClassificationHeader,
+    headerData : headerData
+};
