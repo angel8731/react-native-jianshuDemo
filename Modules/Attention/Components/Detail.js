@@ -34,16 +34,14 @@ var hotDetail = React.createClass({
                     handler : this.props.onRightButtonPress,
                     style : {},
                     tintColor : '#E78170',
-                    icon : require('image!icon_tabbar_back'),
-                    pos : 'left'
+                    icon : require('image!icon_tabbar_back')
                 }}
                 rightButton={{
                     title : this.props.rightButtonTitle,
                     handler : this.props.onRightButtonPress,
                     style : {},
                     tintColor : '#999',
-                    icon : require('image!icon_tabbar_white_more'),
-                    pos : 'right'
+                    icon : require('image!icon_tabbar_white_more')
                 }}/>
                 <View style={styles.content}>
                     <WebView

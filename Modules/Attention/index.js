@@ -17,7 +17,7 @@ import FacebookTabBar from './Components/FackbookTabBar.js';
 import AttentionNavbar from './Components/navbar.js';
 import Header from './Components/classificationHeader.js';
 import Hot from './Components/recommendation.js';
-var arrs = [1,2,3]
+
 var AttentionPage = React.createClass({
     getInitialState : function(){
         console.log(this.props);

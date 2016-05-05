@@ -35,14 +35,20 @@ var ds = new ListView.DataSource({
 var Hot = React.createClass({
     getInitialState : function(){
         return {
-            dataSource: null
+            dataSource: null,
+            isFetchMaxId:0,
+            isRefreshing : false
         }
     },
     onEndReached : function(){
-
+        if(this.state.isFetchMaxId != this.state.dataSource.max) {
+            this.setState({
+                isFetchMaxId:this.state.dataSource.max,
+            });
+            this.getData('bottom', 20);
+        }
     },
     getData : async function(pos, count) {
-        this.state.dataSource = null
         if(!this.state.dataSource) {
             var begin_id = 0;
         } else {
@@ -56,6 +62,7 @@ var Hot = React.createClass({
             .then((response) => response.json())
             .then(
             (responseData) => {
+
                 if(responseData.status == 1) {
                     if(this.state.dataSource == null) {
                         var tmp = {
@@ -65,6 +72,7 @@ var Hot = React.createClass({
 
                     } else {
                         var tmp = this.state.dataSource;
+                        console.log()
                         if(pos == 'top') {
                             tmp.lists.unshift(responseData.data.lists.lists);
                         } else {
@@ -104,6 +112,13 @@ var Hot = React.createClass({
             );
         }
     },
+    _reloadLists : function() {
+        this.setState({isRefreshing: true});
+        setTimeout(() => {
+            this.getData('top', 6);
+            this.setState({isRefreshing: false});
+        }, 1000);
+    },
     render : function(){
         var height = Dimensions.get('window').height;
         if(!this.state.loaded) {
@@ -135,6 +150,14 @@ var Hot = React.createClass({
                         style={{backgroundColor : '#FFF'}}
                         renderFooter={this.renderFooter}
                         minPulldownDistance={30}   // 最新下拉长度
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.isRefreshing}
+                                onRefresh={this._reloadLists}
+                                tintColor=  "#CCC"
+                                title="正在拉取数据..."
+                            />
+                        }
                     />
                 </View>
             );
