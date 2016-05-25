@@ -13,25 +13,25 @@ import React,{
 var headerData = [
     {
         key : 'index',
-        title : '推荐',
+        title : '头条',
         icon : '',
         href : ''
     },
     {
         key : 'news',
-        title : '热点新闻',
+        title : '新闻',
         icon : '',
         href : ''
     },
     {
-        key : 'joke',
-        title : '搞笑',
+        key : 'economic',
+        title : '财经',
         icon : '',
         href : ''
     },
     {
-        key : 'video',
-        title : '视频',
+        key : 'sport',
+        title : '体育',
         icon : '',
         href : ''
     },
@@ -42,20 +42,56 @@ var headerData = [
         href : ''
     },
     {
-        key : 'fashion',
-        title : '时尚',
+        key : 'military',
+        title : '军事',
         icon : '',
         href : ''
     },
     {
         key : 'tech',
+        title : '教育',
+        icon : '',
+        href : ''
+    },
+    {
+        key : 'science',
         title : '科技',
         icon : '',
         href : ''
     },
     {
-        key : 'sports',
-        title : '体育',
+        key : 'nba',
+        title : 'NBA',
+        icon : '',
+        href : ''
+    },
+    {
+        key : 'stock',
+        title : '股票',
+        icon : '',
+        href : ''
+    },
+    {
+        key : 'constellation',
+        title : '星座',
+        icon : '',
+        href : ''
+    },
+    {
+        key : 'woman',
+        title : '女性',
+        icon : '',
+        href : ''
+    },
+    {
+        key : 'health',
+        title : '健康',
+        icon : '',
+        href : ''
+    },
+    {
+        key : 'mothering',
+        title : '育儿',
         icon : '',
         href : ''
     }

@@ -55,42 +55,44 @@ var Hot = React.createClass({
         if(!count) {
             count = 6;
         }
+
         var url = PRE_LIST_URL + this.props.tabLabel + '/'+count+'?beginid=' + begin_id;
-        fetch(url)
-            .then((response) => response.json())
-            .then(
-            (responseData) => {
-
-                if(responseData.status == 1) {
-                    if(this.state.dataSource == null) {
-                        var tmp = {
-                            lists:[responseData.data.lists.lists],
-                            max: responseData.data.lists.max
-                        };
-
-                    } else {
-                        var tmp = this.state.dataSource;
-                        console.log()
-                        if(pos == 'top') {
-                            tmp.lists.unshift(responseData.data.lists.lists);
-                        } else {
-                            tmp.lists.push(responseData.data.lists.lists);
-                        }
-                        tmp.max = responseData.data.lists.max;
-
-                    }
-                    this.setState({
-                        dataSource: tmp,
-                        loaded: true
-                    });
-
-                    AsyncStorage.setItem(LISTS_KEY + this.props.tabLabel, JSON.stringify(tmp)).done();
-                } else {
-                    // Alert.alert('暂无最新，请稍等片刻！');
-                }
-            }
-        )
-            .done();
+        console.log(url);
+        // fetch(url)
+        //     .then((response) => response.json())
+        //     .then(
+        //     (responseData) => {
+        //         console.log(responseData);
+        //         if(responseData.status == 1) {
+        //             if(this.state.dataSource == null) {
+        //                 var tmp = {
+        //                     lists:[responseData.data.lists.lists],
+        //                     max: responseData.data.lists.max
+        //                 };
+        //
+        //             } else {
+        //                 var tmp = this.state.dataSource;
+        //                 console.log()
+        //                 if(pos == 'top') {
+        //                     tmp.lists.unshift(responseData.data.lists.lists);
+        //                 } else {
+        //                     tmp.lists.push(responseData.data.lists.lists);
+        //                 }
+        //                 tmp.max = responseData.data.lists.max;
+        //
+        //             }
+        //             this.setState({
+        //                 dataSource: tmp,
+        //                 loaded: true
+        //             });
+        //
+        //             AsyncStorage.setItem(LISTS_KEY + this.props.tabLabel, JSON.stringify(tmp)).done();
+        //         } else {
+        //             // Alert.alert('暂无最新，请稍等片刻！');
+        //         }
+        //     }
+        // )
+        //     .done();
     },
     _loadinitData : async function(){
         await this.getData('init',30);
@@ -98,7 +100,7 @@ var Hot = React.createClass({
     renderFooter : function() {
         if(Platform.OS === 'ios') {
             return (
-                <View style={{height:60,flex : 1,alignItems:'center',justifyContent:'center'}}>
+                <View style={{height:260,flex : 1,alignItems:'center',justifyContent:'center'}}>
                     <ActivityIndicatorIOS color = {'#d43d3d'} />
                 </View>
             );

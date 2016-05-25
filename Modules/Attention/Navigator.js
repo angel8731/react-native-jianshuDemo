@@ -19,11 +19,11 @@ var AttentionIndex  = React.createClass({
                 tintColor='#cccccc'
                 barTintColor='#cccccc'
                 initialRoute={{name : 'AttentionPage', component : AttentionPage}}
-                //configureScene= {(route)=> {
-                //  let  gestureType = Navigator.SceneConfigs.HorizontalSwipeJump;
-                //  gestureType.gestures.jumpForward=null;
-                //  return gestureType
-                //}}
+                configureScene= {(route)=> {
+                  let  gestureType = Navigator.SceneConfigs.HorizontalSwipeJump;
+                  gestureType.gestures.jumpForward=null;
+                  return gestureType
+                }}
                 renderScene={(route, navigator) => {
                     let Component = route.component;
                     return <Component {...route.params} {...route} navigator={navigator} ref="AttentionPage" />
